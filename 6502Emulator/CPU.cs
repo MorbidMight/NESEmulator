@@ -36,17 +36,14 @@ namespace _6502Emulator
             ResetCPU();    
         }
 
-        public void RunCPU(List<List<byte>> operations, int length)
+        public void RunCPU(List<byte> operations, int programLength)
         {
             int cutoff = 100;
-            int numBytesInProgram 
-            while (programCounter < operations.)
+            while (programCounter < programLength)
             {
-                byte opcode = operations[programCounter][0];
-                List<byte> otherBytes = operations[programCounter];
-                
-                HandleOperation(opcode, otherBytes);
-                programCounter++;
+                byte opcode = operations[programCounter];
+                HandleOperation(opcode, operations);
+                programCounter += (ushort) Opcodes.getOperationByteLength(opcode);
                 cutoff--;
             }
         }
@@ -153,69 +150,69 @@ namespace _6502Emulator
         {
             switch (addressingMode)
             {
-                case (int)addressingTypes.Absolute:
+                case (int) addressingTypes.Absolute:
                 {
-                    ushort effectiveAddress = BitConverter.ToUInt16(new byte[] { bytes[2], bytes[1] }, 0);
+                    ushort effectiveAddress = BitConverter.ToUInt16(new[] { bytes[programCounter + 2], bytes[programCounter + 1] }, 0);
                     return effectiveAddress;
                 }
-                case (int)addressingTypes.XIndexedAbsolute:
+                case (int) addressingTypes.XIndexedAbsolute:
                 {
-                    ushort effectiveAddress = (byte)(BitConverter.ToUInt16(new[] { bytes[2], bytes[1] }, 0) + register_x);
+                    ushort effectiveAddress = (byte)(BitConverter.ToUInt16(new[] { bytes[programCounter + 2], bytes[programCounter + 1] }, 0) + register_x);
                     return effectiveAddress;
                 }
-                case (int)addressingTypes.YIndexedAbsolute:
+                case (int) addressingTypes.YIndexedAbsolute:
                 {
-                    ushort effectiveAddress = (byte)(BitConverter.ToUInt16(new[] { bytes[2], bytes[1] }, 0) + register_y);
+                    ushort effectiveAddress = (byte)(BitConverter.ToUInt16(new[] { bytes[programCounter + 2], bytes[programCounter + 1] }, 0) + register_y);
                     return effectiveAddress;
                 }
-                case (int)addressingTypes.ZeroPage:
+                case (int) addressingTypes.ZeroPage:
                 {
-                    ushort effectiveAddress = BitConverter.ToUInt16(new[] { bytes[1], (byte)0 }, 0);
+                    ushort effectiveAddress = BitConverter.ToUInt16(new[] { bytes[ programCounter + 1], (byte)0 }, 0);
                     return effectiveAddress;
                 }
-                case (int)addressingTypes.XIndexedZeroPage:
+                case (int) addressingTypes.XIndexedZeroPage:
                 {
-                    ushort effectiveAddress = (ushort)(bytes[1] + register_x);
+                    ushort effectiveAddress = (ushort)(bytes[programCounter + 1] + register_x);
                     return effectiveAddress;
                 }
-                case (int)addressingTypes.YIndexedZeroPage:
+                case (int) addressingTypes.YIndexedZeroPage:
                 {
-                    ushort effectiveAddress = (ushort)(bytes[1] + register_y);
+                    ushort effectiveAddress = (ushort)(bytes[programCounter + 1] + register_y);
                     return effectiveAddress;
                 }
                 //returns program counter + offset
-                case (int)addressingTypes.Relative:
+                case (int) addressingTypes.Relative:
                 {
-                    ushort effectiveAddress = unchecked((ushort)((short)programCounter + bytes[1]));
+                    ushort effectiveAddress = unchecked((ushort)((short)programCounter + bytes[programCounter + 1]));
                     return effectiveAddress;
                 }
-                case (int)addressingTypes.AbsoluteIndirect:
+                case (int) addressingTypes.AbsoluteIndirect:
                 {
-                    ushort effectiveAddress = BitConverter.ToUInt16(new[] { bytes[2], bytes[1] }, 0);
+                    ushort effectiveAddress = BitConverter.ToUInt16(new[] { bytes[programCounter + 2], bytes[programCounter + 1] }, 0);
                     effectiveAddress =
                         BitConverter.ToUInt16(new[] { memory[effectiveAddress], memory[effectiveAddress + 1] }, 0);
                     return effectiveAddress;
                 }
-                case (int)addressingTypes.XIndexedZeroPageIndirect:
+                case (int) addressingTypes.XIndexedZeroPageIndirect:
                 {
-                    byte indirectLowOrder = (byte)(memory[bytes[1]] + register_x);
-                    byte indirectHighOrder = memory[bytes[1] + 1];
+                    byte indirectLowOrder = (byte)(memory[bytes[programCounter + 1]] + register_x);
+                    byte indirectHighOrder = memory[bytes[programCounter + 1] + 1];
                     ushort effectiveAddress = BitConverter.ToUInt16(new[] { indirectHighOrder, indirectLowOrder }, 0);
                     return effectiveAddress;
                 }
-                case (int)addressingTypes.ZeroPageIndirectYIndexed:
+                case (int) addressingTypes.ZeroPageIndirectYIndexed:
                 {
                     bool carryBit = false;
-                    byte indirectLowOrder = (byte) (memory[bytes[1]] + register_y);
+                    byte indirectLowOrder = (byte) (memory[bytes[programCounter + 1]] + register_y);
                     try
                     {
-                        indirectLowOrder = (byte) checked(memory[bytes[1]] + register_y);
+                        indirectLowOrder = (byte) checked(memory[bytes[programCounter + 1]] + register_y);
                     }
                     catch
                     {
                         carryBit = true;
                     }
-                    byte indirectHighOrder = (byte) (memory[bytes[1] + 1] + (carryBit ? 1: 0));
+                    byte indirectHighOrder = (byte) (memory[bytes[programCounter + 1] + 1] + (carryBit ? 1: 0));
                     ushort effectiveAddress = BitConverter.ToUInt16(new [] { indirectHighOrder, indirectLowOrder}, 0);
                     return effectiveAddress;
                 }

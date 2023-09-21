@@ -11,21 +11,15 @@ namespace _6502Emulator
             _fs = new FileStream(fileDirectory, FileMode.Open);
         }
 
-        public (List<List<byte>>, int) Disassemble()
+        public (List<byte>, int) Disassemble()
         {
             int hexIn;
-            List<List<byte>> hexArray = new List<List<byte>>();
+            List<byte> hexArray = new List<byte>();
             int totalLength = 0;
             for (int i = 0; (hexIn = _fs.ReadByte()) != -1; i++)
             {
-                int length = Opcodes.getOperationByteLength((byte) hexIn);
-                totalLength += length;
-                hexArray.Add(new List<byte>());
-                hexArray[i].Add((byte) hexIn);
-                for (int x = 1; x < length; x++)
-                { 
-                    hexArray[i].Add((byte)_fs.ReadByte());
-                } 
+                hexArray.Add((byte) hexIn);
+                totalLength += 1;
             }
             
             return (hexArray, totalLength);

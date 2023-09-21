@@ -1,0 +1,6 @@
+/Users/uravtanna/Coding/CSharp/6502Emulator/6502Emulator/bin/Debug/_6502Emulator.exe
+/Users/uravtanna/Coding/CSharp/6502Emulator/6502Emulator/bin/Debug/_6502Emulator.pdb
+/Users/uravtanna/Coding/CSharp/6502Emulator/6502Emulator/obj/Debug/6502Emulator.csproj.AssemblyReference.cache
+/Users/uravtanna/Coding/CSharp/6502Emulator/6502Emulator/obj/Debug/6502Emulator.csproj.CoreCompileInputs.cache
+/Users/uravtanna/Coding/CSharp/6502Emulator/6502Emulator/obj/Debug/_6502Emulator.exe
+/Users/uravtanna/Coding/CSharp/6502Emulator/6502Emulator/obj/Debug/_6502Emulator.pdb
